@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const mongoConnect = require("./config/db");
 const morgan = require("morgan");
-const auth = require("./routes/auth");
+const contact = require("./routes/contact");
 
 //! Port for running NodeJS
 const port = 5000;
@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 //! Routes 
-app.use("api/v1/auth", auth);
+app.use("/api/v1/contact", contact);
 
 app.get("/", (req, res) => {
   res.send("Hello Express...!");
