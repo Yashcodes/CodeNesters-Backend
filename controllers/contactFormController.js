@@ -17,7 +17,7 @@ module.exports.contactFormController = async (req, res) => {
     }
 
     //* Destructuring data from request body
-    const { name, email, phone, address, pincode } = req.body;
+    const { name, email, phone, address, pincode, message } = req.body;
 
     let userContact = await Contact.create({
       name,
@@ -25,6 +25,7 @@ module.exports.contactFormController = async (req, res) => {
       phone,
       address,
       pincode,
+      message
     });
 
     res.status(200).json({

@@ -8,7 +8,7 @@ const router = express.Router();
 
 //? ROUTE 1 : Route for submitting the contact form
 router.post(
-  "/form-submit",
+  "/form-submit", 
 
   //? Express validation started
   //! Validating the inputs of user using express validator
@@ -18,6 +18,7 @@ router.post(
     body("phone", "Enter a valid phone number").exists(),
     body("address", "Enter a valid address").exists().isLength({ min: 8 }),
     body("pincode", "Enter must be of 6 digits").exists().isLength({ min: 6 }),
+    body("message", "Message field is required").exists(),
   ],
   //? Express validation ends
   contactFormController
