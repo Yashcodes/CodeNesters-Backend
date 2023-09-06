@@ -4,6 +4,7 @@ const cors = require("cors");
 const mongoConnect = require("./config/db");
 const morgan = require("morgan");
 const contact = require("./routes/contact");
+const auth = require("./routes/auth");
 
 //! Port for running NodeJS
 const port = 5000;
@@ -26,6 +27,7 @@ app.use(morgan("dev"));
 
 //! Routes 
 app.use("/api/v1/contact", contact);
+app.use("/api/v1/auth", auth)
 
 app.get("/", (req, res) => {
   res.send("Hello Express...!");
