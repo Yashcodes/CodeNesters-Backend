@@ -12,7 +12,7 @@ module.exports.hashPassword = async (password) => {
   }
 };
 
-module.exports.jwtAuth = async (user) => {
+module.exports.jwtAuth = (user) => {
   const data = {
     userId: {
       id: user.id,
@@ -22,4 +22,8 @@ module.exports.jwtAuth = async (user) => {
   const authToken = jwt.sign(data, process.env.JWT_SECRET);
 
   return authToken;
+};
+
+module.exports.comparePassword = async (password, hashPassword) => {
+  return await bcrypt.compare(password, hashPassword);
 };
