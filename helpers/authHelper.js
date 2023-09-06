@@ -19,7 +19,7 @@ module.exports.jwtAuth = async (user) => {
     },
   };
 
-  const authToken = await jwt.sign(data, process.env.JWT_SECRET);
+  const authToken = jwt.sign(data, process.env.JWT_SECRET);
 
   return authToken;
 };

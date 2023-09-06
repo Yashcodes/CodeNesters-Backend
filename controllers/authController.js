@@ -48,7 +48,7 @@ module.exports.registerController = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Interna Server Error",
-      error,
+      error: error.message,
     });
   }
 };
