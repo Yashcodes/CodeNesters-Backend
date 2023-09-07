@@ -119,3 +119,28 @@ module.exports.loginController = async (req, res) => {
     });
   }
 };
+
+//! Get user controller
+module.exports.getUserController = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findById({ _id: userId });
+    console.log(user);
+
+    res.status(200).json({
+      success: true,
+      message: "User found",
+      user: {
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};

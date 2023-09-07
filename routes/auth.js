@@ -3,8 +3,10 @@ const router = express.Router();
 const {
   registerController,
   loginController,
+  getUserController,
 } = require("../controllers/authController");
 const { body } = require("express-validator");
+const { requireSignIn } = require("../middlewares/authMiddleware");
 
 //? ROUTE 1 : ROUTE FOR CREATING USER
 router.post(
@@ -30,5 +32,8 @@ router.post(
   ],
   loginController
 );
+
+//? ROUTE 3 : ROUTE FOR GETTING USER DETAILS
+router.get("/get-user", requireSignIn, getUserController);
 
 module.exports = router;

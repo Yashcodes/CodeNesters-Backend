@@ -12,12 +12,13 @@ module.exports.requireSignIn = async (req, res, next) => {
 
   try {
     const data = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = data.user;
+
+    req.user = data.userId;
     next();
   } catch (error) {
-    res.status(401).json({
+    res.status(400).json({
       success: false,
-      message: "Please authenticate user using a valid token",
+      message: "Authentication error",
     });
   }
 };
