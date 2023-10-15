@@ -6,7 +6,7 @@ const {
   getUserController,
 } = require("../controllers/authController");
 const { body } = require("express-validator");
-const { requireSignIn } = require("../middlewares/authMiddleware");
+const { requireSignIn, isAdmin } = require("../middlewares/authMiddleware");
 
 //? ROUTE 1 : ROUTE FOR CREATING USER
 router.post(
@@ -36,9 +36,14 @@ router.post(
 //? ROUTE 3 : ROUTE FOR GETTING USER DETAILS
 router.get("/get-user", requireSignIn, getUserController);
 
-//? ROUTE 4 : PROTECTED ROUTE AUTHENTICATION
+//? ROUTE 4 : PROTECTED ROUTE AUTHENTICATION -USER
 router.get("/user-auth", requireSignIn, (req, res) => {
   return res.status(200).json({ ok: true });
 });
+
+//? ROUTE 5 : PROTECTED ROUTE AUTHENTICATION - ADMIN
+router.get('/admin-auth', requireSignIn, isAdmin, (req, res) => {
+  return res.status(200).send({ok : true})
+})
 
 module.exports = router;

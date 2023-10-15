@@ -5,6 +5,7 @@ const mongoConnect = require("./config/db");
 const morgan = require("morgan");
 const contact = require("./routes/contact");
 const auth = require("./routes/auth");
+const userProfile = require("./routes/userProfile");
 
 //! Port for running NodeJS
 const port = 5000;
@@ -25,9 +26,10 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
-//! Routes 
+//! Routes
 app.use("/api/v1/contact", contact);
-app.use("/api/v1/auth", auth)
+app.use("/api/v1/auth", auth);
+app.use("/api/v1/user", userProfile);
 
 app.get("/", (req, res) => {
   res.send("Hello Express...!");
@@ -36,4 +38,3 @@ app.get("/", (req, res) => {
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${port}`);
 });
- 
