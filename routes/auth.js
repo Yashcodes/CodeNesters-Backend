@@ -36,7 +36,7 @@ router.post(
 //? ROUTE 3 : ROUTE FOR GETTING USER DETAILS
 router.get("/get-user", requireSignIn, getUserController);
 
-//? ROUTE 4 : PROTECTED ROUTE AUTHENTICATION -USER
+//? ROUTE 4 : PROTECTED ROUTE AUTHENTICATION - USER
 router.get("/user-auth", requireSignIn, (req, res) => {
   return res.status(200).json({ ok: true });
 });
