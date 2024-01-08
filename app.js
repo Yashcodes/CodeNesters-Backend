@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const contact = require("./routes/contact");
 const auth = require("./routes/auth");
 const userProfile = require("./routes/userProfile");
+const course = require("./routes/course");
 
 //! Port for running NodeJS
 const port = 5000;
@@ -30,6 +31,7 @@ app.use(morgan("dev"));
 app.use("/api/v1/contact", contact);
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/user", userProfile);
+app.use("/api/v1/course", course);
 
 app.get("/", (req, res) => {
   res.send("Hello Express...!");
