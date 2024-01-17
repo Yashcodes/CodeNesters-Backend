@@ -3,6 +3,7 @@ const { requireSignIn, isAdmin } = require("../middlewares/authMiddleware");
 const {
   createCourseCategoryController,
   createCourseController,
+  deleteCourseCategoryController,
 } = require("../controllers/courseController");
 const router = express.Router();
 
@@ -12,6 +13,13 @@ router.post(
   requireSignIn,
   isAdmin,
   createCourseCategoryController
+);
+
+router.delete(
+  "/delete-course-category",
+  requireSignIn,
+  isAdmin,
+  deleteCourseCategoryController
 );
 
 //! ROUTE 2 : CREATE COURSE

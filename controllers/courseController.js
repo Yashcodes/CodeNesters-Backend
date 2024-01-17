@@ -23,6 +23,25 @@ module.exports.createCourseCategoryController = async (req, res) => {
   }
 };
 
+module.exports.deleteCourseCategoryController = async (req, res) => {
+  try {
+    const { _id } = req.body;
+
+    await CourseCategory.deleteOne({ _id });
+
+    res.status(200).json({
+      success: true,
+      message: "Category Deleted Successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
 module.exports.createCourseController = async (req, res) => {
   try {
     const {

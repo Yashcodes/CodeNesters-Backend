@@ -131,7 +131,7 @@ module.exports.getUserController = async (req, res) => {
       success: true,
       message: "User found",
       user: {
-        name: user.name,
+        name: user.name, 
         email: user.email,
       },
     });
