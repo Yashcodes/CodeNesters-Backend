@@ -1,7 +1,7 @@
 const CourseCategory = require("../models/CourseCategory");
 const Course = require("../models/Course");
 const slugify = require("slugify");
-
+const { validationResult } = require("express-validator");
 
 //? CONTROLLERS FOR COURSE CATEGORY
 module.exports.createCourseCategoryController = async (req, res) => {
@@ -45,7 +45,7 @@ module.exports.createCourseCategoryController = async (req, res) => {
 //! Need modifications : May have bugs
 module.exports.updateCourseCategoryController = async (req, res) => {
   try {
-    console.log(req.params)
+    console.log(req.params);
     const { categoryName } = req.body;
     const { id } = req.params;
 
@@ -95,6 +95,18 @@ module.exports.deleteCourseCategoryController = async (req, res) => {
 //? CONTROLLERS FOR COURSES
 module.exports.createCourseController = async (req, res) => {
   try {
+    //* Checking the validation errors
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: "Provide necessary data for creating course",
+        errors: errors.array(),
+      });
+    }
+
+    //* Destructuring course data from the request's body
     const {
       courseName,
       courseCategory,
@@ -106,33 +118,32 @@ module.exports.createCourseController = async (req, res) => {
       courseRating,
     } = req.body;
 
-    if (
-      courseName &&
-      courseCategory &&
-      courseCategoryName &&
-      courseContent &&
-      coursePrice &&
-      coursePriceDiscount &&
-      courseDiscountedPrice &&
-      courseRating
-    ) {
-      const course = await Course.create({
-        courseName,
-        courseCategory,
-        courseCategoryName,
-        courseContent,
-        coursePrice,
-        coursePriceDiscount,
-        courseDiscountedPrice,
-        courseRating,
-      });
+    let course = await Course.findOne({ courseName });
 
-      res.status(201).json({
-        success: true,
-        message: "Course Created Successfully",
-        course,
+    if (course) {
+      return res.status(400).json({
+        success: false,
+        message: "Course Already Exists",
       });
     }
+
+    course = await Course.create({
+      courseName,
+      courseCategory,
+      courseCategoryName,
+      courseContent,
+      coursePrice,
+      coursePriceDiscount,
+      courseDiscountedPrice,
+      courseRating,
+      slug: slugify(courseName),
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Course Created Successfully",
+      course,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,

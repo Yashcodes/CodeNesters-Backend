@@ -7,6 +7,7 @@ const {
   updateCourseCategoryController,
 } = require("../controllers/courseController");
 const router = express.Router();
+const { body } = require("express-validator");
 
 //! ROUTE 1 : CREATE COURSE CATEGORY
 router.post(
@@ -30,7 +31,25 @@ router.delete(
   deleteCourseCategoryController
 );
 
-//! ROUTE 2 : CREATE COURSE
-router.post("/create-course", requireSignIn, isAdmin, createCourseController);
+//! ROUTE 4 : CREATE COURSE
+router.post(
+  "/create-course",
+  requireSignIn,
+  isAdmin,
+  [
+    body("courseName", "Course Name is Required").exists(),
+    body("courseCategory", "Course Category Id is Required").exists(),
+    body("courseCategoryName", "Course Category Name is Required").exists(),
+    body("courseContent", "Course Content is Required").exists(),
+    body("coursePrice", "Course Price is Required").exists(),
+    body("coursePriceDiscount", "Course Price Discount is Required").exists(),
+    body(
+      "courseDiscountedPrice",
+      "Course Discounted Price is Required"
+    ).exists(),
+    body("courseRating", "Course Rating is Required").exists(),
+  ],
+  createCourseController
+);
 
 module.exports = router;
