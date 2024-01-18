@@ -152,3 +152,40 @@ module.exports.createCourseController = async (req, res) => {
     });
   }
 };
+
+module.exports.deleteCourseController = async (req, res) => {
+  try {
+    const { _id } = req.body;
+
+    await Course.findByIdAndDelete({ _id });
+
+    res.status(200).json({
+      success: true,
+      message: "Course Deleted Successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+module.exports.getCourseController = async (req, res) => {
+  try {
+    const courses = await Course.find();
+
+    res.status(200).json({
+      success: true,
+      message: "Courses Retrieved Successfully",
+      courses,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
