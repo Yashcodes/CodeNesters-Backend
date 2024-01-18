@@ -41,6 +41,11 @@ const courseSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+
+  slug: {
+    type: String,
+    lowercase: true,
+  },
 });
 
 const Course = mongoose.model("Course", courseSchema);

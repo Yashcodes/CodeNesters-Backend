@@ -4,6 +4,7 @@ const {
   createCourseCategoryController,
   createCourseController,
   deleteCourseCategoryController,
+  updateCourseCategoryController,
 } = require("../controllers/courseController");
 const router = express.Router();
 
@@ -13,6 +14,13 @@ router.post(
   requireSignIn,
   isAdmin,
   createCourseCategoryController
+);
+
+router.put(
+  "/update-course-category",
+  requireSignIn,
+  isAdmin,
+  updateCourseCategoryController
 );
 
 router.delete(
