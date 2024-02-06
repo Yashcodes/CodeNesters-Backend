@@ -210,3 +210,24 @@ module.exports.getAllCoursesController = async (req, res) => {
     });
   }
 };
+
+//? CONTROLLER FOR GETTING A SINGLE COURSE
+module.exports.getCourseController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const course = await Course.findOne({ _id: id });
+
+    res.status(200).json({
+      success: true,
+      message: "Course Retrieved Successfully",
+      course,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};

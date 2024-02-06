@@ -8,6 +8,7 @@ const {
   deleteCourseController,
   getAllCoursesController,
   getAllCourseCategoryController,
+  getCourseController,
 } = require("../controllers/courseController");
 const router = express.Router();
 const { body } = require("express-validator");
@@ -67,5 +68,7 @@ router.delete("/delete-course", requireSignIn, isAdmin, deleteCourseController);
 
 //! ROUTE 6 : GET COURSE
 router.get("/get-all-courses", getAllCoursesController);
+
+router.get("/get-course/:id", getCourseController);
 
 module.exports = router;
