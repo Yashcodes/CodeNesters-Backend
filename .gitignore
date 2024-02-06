@@ -1,4 +1,2 @@
 node_modules
 .env
-
-routes/services/s3.js
