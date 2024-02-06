@@ -6,7 +6,8 @@ const {
   deleteCourseCategoryController,
   updateCourseCategoryController,
   deleteCourseController,
-  getCourseController,
+  getAllCoursesController,
+  getAllCourseCategoryController,
 } = require("../controllers/courseController");
 const router = express.Router();
 const { body } = require("express-validator");
@@ -31,6 +32,13 @@ router.delete(
   requireSignIn,
   isAdmin,
   deleteCourseCategoryController
+);
+
+router.get(
+  "/get-all-course-categories",
+  requireSignIn,
+  isAdmin,
+  getAllCourseCategoryController
 );
 
 //! ROUTE 4 : CREATE COURSE
@@ -58,6 +66,6 @@ router.post(
 router.delete("/delete-course", requireSignIn, isAdmin, deleteCourseController);
 
 //! ROUTE 6 : GET COURSE
-router.get("/get-courses", getCourseController);
+router.get("/get-all-courses", getAllCoursesController);
 
 module.exports = router;
