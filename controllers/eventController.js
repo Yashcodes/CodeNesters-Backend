@@ -1,7 +1,7 @@
 const { validationResult } = require("express-validator");
-const Service = require("../models/Service.js");
+const Event = require("../models/Event.js");
 
-module.exports.serviceFormController = async (req, res) => {
+module.exports.registerForEventController = async (req, res) => {
   try {
     //* Checking the results of express validator
     const errors = validationResult(req);
@@ -15,21 +15,23 @@ module.exports.serviceFormController = async (req, res) => {
     }
 
     //* Destructuring data from request body
-    const { name, email, phone, place, pincode, message, services } = req.body;
+    const { name, email, phone, place, event, pincode } = req.body;
 
-    const serviceRequest = await Service.create({
+    const eventRegister = await Event.create({
       name,
       email,
       phone,
       place,
+      event,
       pincode,
-      message,
-      services,
     });
 
-    //* Destructuring data from request body
+    res.status(200).json({
+      success: true,
+      message: "Form Submitted Successfully",
+      eventRegister,
+    });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
