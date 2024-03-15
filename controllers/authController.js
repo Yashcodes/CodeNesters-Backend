@@ -131,7 +131,7 @@ module.exports.getUserController = async (req, res) => {
       success: true,
       message: "User found",
       user: {
-        name: user.name, 
+        name: user.name,
         email: user.email,
       },
     });
@@ -142,4 +142,38 @@ module.exports.getUserController = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+module.exports.updatePasswordController = async (req, res) => {
+  const userId = req.user.id;
+  const { oldPassword, newPassword } = req.body;
+
+  //* Finding the logged in user details with password
+  let user = await User.findById({ _id: userId });
+
+  // //* Comparing the received old password with the registered user password
+  const comparedPassword = await comparePassword(oldPassword, user.password);
+
+  if (!comparedPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Wrong old password",
+    });
+  }
+
+  //* Encrypting the new password
+  const newSecuredPassword = await hashPassword(newPassword);
+
+  user = await User.findByIdAndUpdate(
+    { _id: userId },
+    { password: newSecuredPassword },
+    { new: true }
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Password updated successfully",
+  });
+
+  // console.log(user);
 };
