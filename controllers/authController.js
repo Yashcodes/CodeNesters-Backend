@@ -232,7 +232,7 @@ module.exports.sendResetLinkController = async (req, res) => {
         from: "codenesters3@gmail.com",
         to: email,
         subject: "Reset your CodeNesters account password",
-        text: `This link will reset your CodeNesters account and is valid only for 2 minutes. http://localhost:3000/reset-password/${user.id}/${setUserToken.verifyToken}`,
+        text: `This link will reset your CodeNesters account and is valid only for 2 minutes. https://codenesters.in/reset-password/${user.id}/${setUserToken.verifyToken}`,
       };
 
       transporter.sendMail(mailOptions, (error, info) => {
