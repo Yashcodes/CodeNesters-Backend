@@ -5,6 +5,9 @@ const {
   loginController,
   getUserController,
   updatePasswordController,
+  sendResetLinkController,
+  verifyValidUserController,
+  resetPasswordController,
 } = require("../controllers/authController");
 const { body } = require("express-validator");
 const { requireSignIn, isAdmin } = require("../middlewares/authMiddleware");
@@ -43,11 +46,20 @@ router.get("/user-auth", requireSignIn, (req, res) => {
 });
 
 //? ROUTE 5 : PROTECTED ROUTE AUTHENTICATION - ADMIN
-router.get('/admin-auth', requireSignIn, isAdmin, (req, res) => {
-  return res.status(200).send({ok : true})
-})
+router.get("/admin-auth", requireSignIn, isAdmin, (req, res) => {
+  return res.status(200).send({ ok: true });
+});
 
 //? ROUTE 6 : UPDATE USER PASSWORD
-router.put('/update-password', requireSignIn, updatePasswordController)
+router.put("/update-password", requireSignIn, updatePasswordController);
+
+//? ROUTE 7 : SEND PASSWORD RESET LINK
+router.post("/send-reset-link", sendResetLinkController);
+
+//? ROUTE 8 : VERIFY USER FOR RESETTING PASSWORD
+router.get("/verify-reset-user/:id/:token", verifyValidUserController)
+
+//? ROUTE 9 : RESET PASSWORD
+router.post("/reset-password/:id/:token", resetPasswordController)
 
 module.exports = router;

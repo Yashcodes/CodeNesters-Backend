@@ -5,6 +5,18 @@ const {
   jwtAuth,
   comparePassword,
 } = require("../helpers/authHelper");
+const nodemailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+dotenv.config();
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "codenesters3@gmail.com",
+    pass: process.env.NODEMAILER_GOOGLE_PASSWORD,
+  },
+});
 
 //! Register user controller
 module.exports.registerController = async (req, res) => {
@@ -144,36 +156,176 @@ module.exports.getUserController = async (req, res) => {
   }
 };
 
+//! Update password controller
 module.exports.updatePasswordController = async (req, res) => {
-  const userId = req.user.id;
-  const { oldPassword, newPassword } = req.body;
+  try {
+    const userId = req.user.id;
+    const { oldPassword, newPassword } = req.body;
 
-  //* Finding the logged in user details with password
-  let user = await User.findById({ _id: userId });
+    //* Finding the logged in user details with password
+    let user = await User.findById({ _id: userId });
 
-  // //* Comparing the received old password with the registered user password
-  const comparedPassword = await comparePassword(oldPassword, user.password);
+    // //* Comparing the received old password with the registered user password
+    const comparedPassword = await comparePassword(oldPassword, user.password);
 
-  if (!comparedPassword) {
-    return res.status(400).json({
+    if (!comparedPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Wrong old password",
+      });
+    }
+
+    //* Encrypting the new password
+    const newSecuredPassword = await hashPassword(newPassword);
+
+    user = await User.findByIdAndUpdate(
+      { _id: userId },
+      { password: newSecuredPassword },
+      { new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
       success: false,
-      message: "Wrong old password",
+      message: "Internal Server Error",
+      error: error.message,
     });
   }
+};
 
-  //* Encrypting the new password
-  const newSecuredPassword = await hashPassword(newPassword);
+//! Send reset password link
+module.exports.sendResetLinkController = async (req, res) => {
+  try {
+    const { email } = req.body;
 
-  user = await User.findByIdAndUpdate(
-    { _id: userId },
-    { password: newSecuredPassword },
-    { new: true }
-  );
+    if (!email) {
+      return res.status(401).json({
+        success: false,
+        message: "Enter your email",
+      });
+    }
 
-  res.status(200).json({
-    success: true,
-    message: "Password updated successfully",
-  });
+    let user = await User.findOne({ email });
 
-  // console.log(user);
+    const data = {
+      userId: {
+        id: user.id,
+      },
+    };
+
+    const token = jwt.sign(data, process.env.JWT_SECRET, {
+      expiresIn: "120s",
+    });
+
+    const setUserToken = await User.findByIdAndUpdate(
+      { _id: user._id },
+      { verifyToken: token },
+      { new: true }
+    );
+
+    if (setUserToken) {
+      const mailOptions = {
+        from: "codenesters3@gmail.com",
+        to: email,
+        subject: "Reset your CodeNesters account password",
+        text: `This link will reset your CodeNesters account and is valid only for 2 minutes. http://localhost:3000/reset-password/${user.id}/${setUserToken.verifyToken}`,
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          res.status(401).json({
+            success: false,
+            message: "Email not sent",
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            message: "Email sent successfully",
+          });
+        }
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+//! Verify valid user while resetting password or when being redirected from the reset password link
+module.exports.verifyValidUserController = async (req, res) => {
+  try {
+    const { id, token } = req.params;
+
+    //* Finding the user in database
+    let user = await User.findOne({ _id: id, verifyToken: token });
+
+    //* Verifying user with a valid token
+    const verifiedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (user && verifiedToken.userId.id) {
+      return res.status(200).json({
+        success: true,
+        message: "User verified successfully",
+      });
+    } else {
+      return res.status(401).json({
+        success: false,
+        message: "User does not exist",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+//! Reset Password Controller
+module.exports.resetPasswordController = async (req, res) => {
+  try {
+    const { id, token } = req.params;
+    const { password } = req.body;
+
+    //* Finding the user in database
+    let user = await User.findOne({ _id: id, verifyToken: token });
+
+    //* Verifying user with a valid token
+    const verifiedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (user && verifiedToken.userId.id) {
+      //* Encrypting the new password
+      const newSecuredPassword = await hashPassword(password);
+
+      user = await User.findByIdAndUpdate(
+        { _id: id },
+        { password: newSecuredPassword },
+        { new: true }
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Password updated successfully",
+      });
+    } else {
+      return res.status(401).json({
+        success: false,
+        message: "User does not exist",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
 };
