@@ -145,6 +145,9 @@ module.exports.getUserController = async (req, res) => {
       user: {
         name: user.name,
         email: user.email,
+        username: user.username,
+        description: user.description,
+        phone: user.phone,
       },
     });
   } catch (error) {
@@ -321,6 +324,44 @@ module.exports.resetPasswordController = async (req, res) => {
         message: "User does not exist",
       });
     }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+//! Update User Profile
+module.exports.updateUserProfileController = async (req, res) => {
+  try {
+    //* Destructuring data from request body
+    const { name, email, username, description, phone } = req.body;
+
+    //* Checking if the user with provided email exists or not in database
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Please login before updating the profile",
+      });
+    }
+
+    user = await User.findByIdAndUpdate(
+      { _id: user.id },
+      { name, username, description, phone },
+      { new: true }
+    )
+      .select("-password")
+      .select("-verifyToken")
+      .select("-role");
+
+    res.status(200).json({
+      success: true,
+      message: "Profile Updated Successfully",
+    });
   } catch (error) {
     res.status(500).json({
       success: false,

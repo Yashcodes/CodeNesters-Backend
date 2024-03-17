@@ -27,6 +27,21 @@ const UserSchema = new mongoose.Schema(
     verifyToken: {
       type: String,
     },
+
+    phone: {
+      type: String,
+      default: "Your phone number here",
+    },
+
+    description: {
+      type: String,
+      default: "Your profile description here",
+    },
+
+    username: {
+      type: String,
+      default: "Your username here",
+    },
   },
   { timestamps: true }
 );

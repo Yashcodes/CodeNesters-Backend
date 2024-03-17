@@ -8,6 +8,7 @@ const {
   sendResetLinkController,
   verifyValidUserController,
   resetPasswordController,
+  updateUserProfileController,
 } = require("../controllers/authController");
 const { body } = require("express-validator");
 const { requireSignIn, isAdmin } = require("../middlewares/authMiddleware");
@@ -57,9 +58,12 @@ router.put("/update-password", requireSignIn, updatePasswordController);
 router.post("/send-reset-link", sendResetLinkController);
 
 //? ROUTE 8 : VERIFY USER FOR RESETTING PASSWORD
-router.get("/verify-reset-user/:id/:token", verifyValidUserController)
+router.get("/verify-reset-user/:id/:token", verifyValidUserController);
 
 //? ROUTE 9 : RESET PASSWORD
-router.post("/reset-password/:id/:token", resetPasswordController)
+router.post("/reset-password/:id/:token", resetPasswordController);
+
+//? ROUTE 10 : UPDATE USER PROFILE
+router.put("/update-user-profile", requireSignIn, updateUserProfileController);
 
 module.exports = router;
