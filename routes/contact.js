@@ -2,13 +2,15 @@ const express = require("express");
 const { body } = require("express-validator");
 const {
   contactFormController,
+  getAllContactController,
 } = require("../controllers/contactFormController");
+const { requireSignIn, isAdmin } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
 //? ROUTE 1 : Route for submitting the contact form
 router.post(
-  "/form-submit", 
+  "/form-submit",
 
   //? Express validation started
   //! Validating the inputs of user using express validator
@@ -23,5 +25,8 @@ router.post(
   //? Express validation ends
   contactFormController
 );
+
+//? ROUTE 2 : ROUTE FOR GETTING ALL THE CONTACT US PAGE INFORMATION
+router.get("/get-all-contact", requireSignIn, isAdmin, getAllContactController);
 
 module.exports = router;

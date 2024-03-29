@@ -25,18 +25,37 @@ module.exports.contactFormController = async (req, res) => {
       phone,
       address,
       pincode,
-      message
+      message,
     });
 
     res.status(200).json({
       success: true,
       message: "Form Submitted Successfully",
-      userContact
+      userContact,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
+    });
+  }
+};
+
+//! Getting all the contact page submission data
+module.exports.getAllContactController = async (req, res) => {
+  try {
+    const contacts = await Contact.find();
+
+    res.status(200).json({
+      success: true,
+      message: "All contact submissions fetched successfully",
+      contacts,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
     });
   }
 };

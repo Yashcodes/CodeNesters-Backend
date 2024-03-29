@@ -1,11 +1,13 @@
 const express = require("express");
 const { body } = require("express-validator");
 const {
-  serviceFormController,
+  serviceFormController, getServiceRequestsController,
 } = require("../controllers/serviceFromController");
+const { requireSignIn, isAdmin } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
+//? ROUTE 1 : ROUTE FOR SERVICES FORM SUBMISSION
 router.post(
   "/submit", //? Express validation started
   //! Validating the inputs of user using express validator
@@ -20,6 +22,14 @@ router.post(
   ],
   //? Express validation ends)
   serviceFormController
+);
+
+//? ROUTE 2 : ROUTE FOR GETTING ALL THE SERVICE REQUESTS
+router.get(
+  "/get-service-requests",
+  requireSignIn,
+  isAdmin,
+  getServiceRequestsController
 );
 
 module.exports = router;

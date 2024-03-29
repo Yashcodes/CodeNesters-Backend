@@ -36,3 +36,22 @@ module.exports.serviceFormController = async (req, res) => {
     });
   }
 };
+
+//! Getting all the services requested
+module.exports.getServiceRequestsController = async (req, res) => {
+  try {
+    const serviceRequests = await Service.find();
+
+    res.status(200).json({
+      success: true,
+      message: "All the service requests fetched successfully",
+      serviceRequests,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};

@@ -35,6 +35,26 @@ module.exports.registerForEventController = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+//! Get all the event registrations
+module.exports.getAllEventRegistrationsController = async (req, res) => {
+  try {
+    const registrations = await Event.find();
+
+    res.status(200).json({
+      success: true,
+      message: "All event registrations fetched successfully",
+      registrations,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
     });
   }
 };

@@ -1,10 +1,12 @@
 const express = require("express");
+const router = express.Router();
 const { body } = require("express-validator");
 const {
-  registerForEventController,
+  registerForEventController, getAllEventRegistrationsController,
 } = require("../controllers/eventController");
-const router = express.Router();
+const { requireSignIn, isAdmin } = require("../middlewares/authMiddleware");
 
+//? ROUTE 1 : ROUTE FOR USER EVENT REGISTRATION
 router.post(
   "/register-event",
 
@@ -20,6 +22,14 @@ router.post(
   ],
 
   registerForEventController
+);
+
+//? ROUTE 2 : ROUTE FOR GETTING ALL THE USERS REGISTRATIONS BY THE ADMIN
+router.get(
+  "/get-event-registrations",
+  requireSignIn,
+  isAdmin,
+  getAllEventRegistrationsController
 );
 
 module.exports = router;
