@@ -24,9 +24,8 @@ mongoConnect();
 
 //! Using cors
 app.use(cors({
-  origin: 'http://localhost:3000', // Replace with your production domain
+  origin: ['http://localhost:3000', "https://codenesters.in"], // Replace with your production domain
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }));
 
