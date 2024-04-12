@@ -23,11 +23,7 @@ const app = express();
 mongoConnect();
 
 //! Using cors
-app.use(cors({
-  origin: ['http://localhost:3000', "https://codenesters.in"], // Replace with your production domain
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true,
-}));
+app.use(cors());
 
 //! Middlewares
 app.use(express.json());
