@@ -28,6 +28,12 @@ router.post("/putObjectUrl", requireSignIn, async (req, res) => {
   }
 });
 
+router.post("/url", requireSignIn, async (req, res) => {
+  res.json({
+    url: "https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg",
+  });
+});
+
 //? ROUTE 2: Route for getting getObject Url
 router.post("/getObjectUrl", requireSignIn, async (req, res) => {
   try {

@@ -22,8 +22,29 @@ const app = express();
 //! Connecting to MongoDB Database
 mongoConnect();
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With, Content-Type, Authorization"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
 //! Using cors
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
 //! Middlewares
 app.use(express.json());
@@ -32,10 +53,10 @@ app.use(morgan("dev"));
 //! Routes
 app.use("/api/v1/contact", contact);
 app.use("/api/v1/auth", auth);
-app.use("/api/v1/user", userProfile);
 app.use("/api/v1/course", course);
 app.use("/api/v1/service", service);
 app.use("/api/v1/event", event);
+app.use("/api/v1/user", userProfile);
 
 app.get("/", (req, res) => {
   res.send("Hello Express...!");
