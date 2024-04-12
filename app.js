@@ -37,14 +37,7 @@ app.use((req, res, next) => {
 });
 
 //! Using cors
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+app.use(cors());
 
 //! Middlewares
 app.use(express.json());
