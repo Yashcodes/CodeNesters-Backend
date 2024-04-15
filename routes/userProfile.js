@@ -18,6 +18,7 @@ router.post("/putObjectUrl", requireSignIn, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error in generating Put Object URL",
+      error: error.message,
     });
   }
 });
@@ -36,6 +37,7 @@ router.post("/getObjectUrl", requireSignIn, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error in generating Get Object URL",
+      error: error.message,
     });
   }
 });
