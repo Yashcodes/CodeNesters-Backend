@@ -148,6 +148,9 @@ module.exports.getUserController = async (req, res) => {
         username: user.username,
         description: user.description,
         phone: user.phone,
+        instagram: user.instagram,
+        github: user.github,
+        linkedin: user.linkedin,
       },
     });
   } catch (error) {
@@ -337,7 +340,16 @@ module.exports.resetPasswordController = async (req, res) => {
 module.exports.updateUserProfileController = async (req, res) => {
   try {
     //* Destructuring data from request body
-    const { name, email, username, description, phone } = req.body;
+    const {
+      name,
+      email,
+      username,
+      description,
+      phone,
+      instagram,
+      github,
+      linkedin,
+    } = req.body;
 
     //* Checking if the user with provided email exists or not in database
     let user = await User.findOne({ email });
@@ -351,7 +363,7 @@ module.exports.updateUserProfileController = async (req, res) => {
 
     user = await User.findByIdAndUpdate(
       { _id: user.id },
-      { name, username, description, phone },
+      { name, username, description, phone, instagram, github, linkedin },
       { new: true }
     )
       .select("-password")

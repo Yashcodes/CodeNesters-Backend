@@ -42,6 +42,18 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "Your username here",
     },
+
+    instagram: {
+      type: String,
+    },
+
+    github: {
+      type: String,
+    },
+
+    linkedin: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
