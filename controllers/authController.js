@@ -382,3 +382,24 @@ module.exports.updateUserProfileController = async (req, res) => {
     });
   }
 };
+
+module.exports.getAllUsersController = async (req, res) => {
+  try {
+    const users = await User.find()
+      .select("-password")
+      .select("-verifyToken")
+      .select("-role");
+
+    res.status(200).json({
+      success: true,
+      message: "All users fetched successfully",
+      users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};

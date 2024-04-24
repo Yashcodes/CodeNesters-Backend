@@ -9,6 +9,7 @@ const {
   verifyValidUserController,
   resetPasswordController,
   updateUserProfileController,
+  getAllUsersController,
 } = require("../controllers/authController");
 const { body } = require("express-validator");
 const { requireSignIn, isAdmin } = require("../middlewares/authMiddleware");
@@ -65,5 +66,8 @@ router.post("/reset-password/:id/:token", resetPasswordController);
 
 //? ROUTE 10 : UPDATE USER PROFILE
 router.put("/update-user-profile", requireSignIn, updateUserProfileController);
+
+//? ROUTE 10 : UPDATE USER PROFILE
+router.get("/get-all-users", requireSignIn, isAdmin, getAllUsersController);
 
 module.exports = router;
