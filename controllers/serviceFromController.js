@@ -55,3 +55,23 @@ module.exports.getServiceRequestsController = async (req, res) => {
     });
   }
 };
+
+//! Deleting a single enquiry entry
+module.exports.deleteServicesEnquiryController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await Service.findByIdAndDelete({_id : id});
+
+    res.status(200).json({
+      success: true,
+      message: "Enquiry Deleted Successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};

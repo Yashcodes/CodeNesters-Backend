@@ -1,7 +1,9 @@
 const express = require("express");
 const { body } = require("express-validator");
 const {
-  serviceFormController, getServiceRequestsController,
+  serviceFormController,
+  getServiceRequestsController,
+  deleteServicesEnquiryController
 } = require("../controllers/serviceFromController");
 const { requireSignIn, isAdmin } = require("../middlewares/authMiddleware");
 
@@ -30,6 +32,14 @@ router.get(
   requireSignIn,
   isAdmin,
   getServiceRequestsController
+);
+
+//? ROUTE 3 : ROUTE FOR DELETING A SINGLE ENQUIRY
+router.delete(
+  "/delete-services-enquiry/:id",
+  requireSignIn,
+  isAdmin,
+  deleteServicesEnquiryController
 );
 
 module.exports = router;
