@@ -3,6 +3,7 @@ const { body } = require("express-validator");
 const {
   contactFormController,
   getAllContactController,
+  deleteContactEnquiryController
 } = require("../controllers/contactFormController");
 const { requireSignIn, isAdmin } = require("../middlewares/authMiddleware");
 
@@ -28,5 +29,8 @@ router.post(
 
 //? ROUTE 2 : ROUTE FOR GETTING ALL THE CONTACT US PAGE INFORMATION
 router.get("/get-all-contact", requireSignIn, isAdmin, getAllContactController);
+
+//? ROUTE 3 : ROUTE FOR DELETING A SINGLE ENQUIRY
+router.delete("/delete-contact-enquiry/:id", requireSignIn, isAdmin, deleteContactEnquiryController);
 
 module.exports = router;
