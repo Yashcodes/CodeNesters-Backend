@@ -3,6 +3,7 @@ const Course = require("../models/Course");
 const slugify = require("slugify");
 const { validationResult } = require("express-validator");
 const { putObjectURL, getObjectURL } = require("../routes/services/s3");
+const CourseEnquiry = require("../models/CourseEnquiry");
 
 //? CONTROLLERS FOR CREATING COURSE CATEGORY
 module.exports.createCourseCategoryController = async (req, res) => {
@@ -272,6 +273,45 @@ module.exports.getCourseImageController = async (req, res) => {
       success: false,
       message: "Error in generating Get Course URL",
       error: error.message,
+    });
+  }
+};
+
+module.exports.courseFormSubmitController = async (req, res) => {
+  try {
+    //* Checking the results of express validator
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        errors: errors.array(),
+        message: "Provide necesssary credentials",
+      });
+    }
+
+    //* Destructuring data from request body
+    const { name, email, phone, place, pincode, message, courses } = req.body;
+
+    const courseRequest = await CourseEnquiry.create({
+      name,
+      email,
+      phone,
+      place,
+      pincode,
+      message,
+      courses,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Courses Enquiry Submitted Successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
     });
   }
 };

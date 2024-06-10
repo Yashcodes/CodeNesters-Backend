@@ -27,7 +27,10 @@ module.exports.serviceFormController = async (req, res) => {
       services,
     });
 
-    //* Destructuring data from request body
+    res.status(200).json({
+      success: true,
+      message: "Service Requested Successfully",
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -61,7 +64,7 @@ module.exports.deleteServicesEnquiryController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await Service.findByIdAndDelete({_id : id});
+    await Service.findByIdAndDelete({ _id: id });
 
     res.status(200).json({
       success: true,

@@ -11,6 +11,7 @@ const {
   getCourseController,
   uploadCourseImageController,
   getCourseImageController,
+  courseFormSubmitController,
 } = require("../controllers/courseController");
 const router = express.Router();
 const { body } = require("express-validator");
@@ -84,5 +85,23 @@ router.post(
 
 //! ROUTE 9 : GETTING COURSE IMAGE URL
 router.post("/get-course-image", getCourseImageController);
+
+//! ROUTE 10 : SUBMITTING THE COURSE ENQUIRY
+router.post(
+  "/course-form-submit",
+  //? Express validation started
+  //! Validating the inputs of user using express validator
+  [
+    body("name", "Enter a valid name").isLength({ min: 5 }),
+    body("email", "Enter a valid email").isEmail(),
+    body("phone", "Enter a valid phone number").exists(),
+    body("place", "Enter a valid address").exists().isLength({ min: 4 }),
+    body("courses", "Enter some courses").isArray().isLength({ min: 1 }),
+    body("pincode", "Enter must be of 6 digits").exists().isLength({ min: 6 }),
+    body("message", "Message field is required").exists(),
+  ],
+  //? Express validation ends)
+  courseFormSubmitController
+);
 
 module.exports = router;
