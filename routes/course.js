@@ -9,6 +9,8 @@ const {
   getAllCoursesController,
   getAllCourseCategoryController,
   getCourseController,
+  uploadCourseImageController,
+  getCourseImageController,
 } = require("../controllers/courseController");
 const router = express.Router();
 const { body } = require("express-validator");
@@ -66,9 +68,21 @@ router.post(
 //! ROUTE 5 : DELETE COURSE
 router.delete("/delete-course", requireSignIn, isAdmin, deleteCourseController);
 
-//! ROUTE 6 : GET COURSE
+//! ROUTE 6 : GET ALL COURSES
 router.get("/get-all-courses", getAllCoursesController);
 
+//! ROUTE 7 : GET SINGLE COURSES
 router.get("/get-course/:id", getCourseController);
+
+//! ROUTE 8 : UPLOAD COURSE IMAGE
+router.post(
+  "/upload-course-image",
+  requireSignIn,
+  isAdmin,
+  uploadCourseImageController
+);
+
+//! ROUTE 9 : GETTING COURSE IMAGE URL
+router.post("/get-course-image", getCourseImageController);
 
 module.exports = router;

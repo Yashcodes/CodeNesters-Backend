@@ -7,7 +7,10 @@ const router = express.Router();
 //? ROUTE 1: Route for getting putObject Url
 router.post("/putObjectUrl", requireSignIn, async (req, res) => {
   try {
-    const url = await putObjectURL(req.body.fileName, req.body.contentType);
+    const url = await putObjectURL(
+      `uploads/userProfiles/${req.body.fileName}`,
+      req.body.contentType
+    );
 
     res.status(200).json({
       success: true,

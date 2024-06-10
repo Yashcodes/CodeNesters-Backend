@@ -29,12 +29,11 @@ module.exports.getObjectURL = async (key) => {
   return url;
 };
 
-
 //! Putting object in S3
-module.exports.putObjectURL = async (fileName, contentType) => {
+module.exports.putObjectURL = async (key, contentType) => {
   const command = new PutObjectCommand({
     Bucket: "codenesters-users",
-    Key: `uploads/userProfiles/${fileName}`,
+    Key: key,
     ContentType: contentType,
   });
 

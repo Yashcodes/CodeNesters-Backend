@@ -2,6 +2,7 @@ const CourseCategory = require("../models/CourseCategory");
 const Course = require("../models/Course");
 const slugify = require("slugify");
 const { validationResult } = require("express-validator");
+const { putObjectURL, getObjectURL } = require("../routes/services/s3");
 
 //? CONTROLLERS FOR CREATING COURSE CATEGORY
 module.exports.createCourseCategoryController = async (req, res) => {
@@ -129,6 +130,7 @@ module.exports.createCourseController = async (req, res) => {
     const {
       courseName,
       courseCategory,
+      courseImage,
       courseCategoryName,
       courseContent,
       coursePrice,
@@ -149,6 +151,7 @@ module.exports.createCourseController = async (req, res) => {
     course = await Course.create({
       courseName,
       courseCategory,
+      courseImage,
       courseCategoryName,
       courseContent,
       coursePrice,
@@ -227,6 +230,47 @@ module.exports.getCourseController = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+//? CONTROLLER FOR UPLOADING COURSE IMAGE TO S3
+module.exports.uploadCourseImageController = async (req, res) => {
+  try {
+    const url = await putObjectURL(
+      `uploads/courses/${req.body.fileName}`,
+      req.body.contentType
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Upload URL Generated Successfully",
+      url,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error in generating upload URL",
+      error: error.message,
+    });
+  }
+};
+
+//? CONTROLLER FOR GETTING COURSE IMAGE FROM S3
+module.exports.getCourseImageController = async (req, res) => {
+  try {
+    const url = await getObjectURL(req.body.key);
+
+    res.status(200).json({
+      success: true,
+      message: "Course Image URL Generated Successfully",
+      url,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error in generating Get Course URL",
       error: error.message,
     });
   }
