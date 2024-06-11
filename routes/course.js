@@ -12,6 +12,7 @@ const {
   uploadCourseImageController,
   getCourseImageController,
   courseFormSubmitController,
+  getCourseEnquiriesController
 } = require("../controllers/courseController");
 const router = express.Router();
 const { body } = require("express-validator");
@@ -103,5 +104,8 @@ router.post(
   //? Express validation ends)
   courseFormSubmitController
 );
+
+//! ROUTE 11 : GET COURSE ENQUIRIES
+router.get("/get-course-enquiries", requireSignIn, isAdmin, getCourseEnquiriesController)
 
 module.exports = router;

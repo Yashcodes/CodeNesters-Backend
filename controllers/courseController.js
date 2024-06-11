@@ -277,6 +277,7 @@ module.exports.getCourseImageController = async (req, res) => {
   }
 };
 
+//? CONTROLLER FOR SUBMITTING THE COURSE ENQUIRY FORM
 module.exports.courseFormSubmitController = async (req, res) => {
   try {
     //* Checking the results of express validator
@@ -309,6 +310,24 @@ module.exports.courseFormSubmitController = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+//? CONTROLLER FOR GETTING ALL THE COURSE REGARDED ENQUIRIES
+module.exports.getCourseEnquiriesController = async (req, res) => {
+  try {
+    const courseEnquiries = await CourseEnquiry.find();
+
+    res.status(200).json({
+      success: true,
+      message: "Course Enquiries Fetched Successfully",
+      courseEnquiries,
+    });
+  } catch (error) {
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
