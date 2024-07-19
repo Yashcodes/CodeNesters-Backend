@@ -4,6 +4,9 @@ const slugify = require("slugify");
 const { validationResult } = require("express-validator");
 const { putObjectURL, getObjectURL } = require("../routes/services/s3");
 const CourseEnquiry = require("../models/CourseEnquiry");
+const NodeCache = require("node-cache");
+
+const cache = new NodeCache();
 
 //? CONTROLLERS FOR CREATING COURSE CATEGORY
 module.exports.createCourseCategoryController = async (req, res) => {
@@ -199,7 +202,14 @@ module.exports.deleteCourseController = async (req, res) => {
 //? CONTROLLER FOR GETTING ALL THE COURSES
 module.exports.getAllCoursesController = async (req, res) => {
   try {
-    const courses = await Course.find();
+    let courses;
+
+    if (cache.has("courses")) {
+      courses = JSON.parse(cache.get("courses"));
+    } else {
+      courses = await Course.find();
+      cache.set("courses", JSON.stringify(courses));
+    }
 
     res.status(200).json({
       success: true,
