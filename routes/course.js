@@ -12,10 +12,26 @@ const {
   uploadCourseImageController,
   getCourseImageController,
   courseFormSubmitController,
-  getCourseEnquiriesController
+  getCourseEnquiriesController,
 } = require("../controllers/courseController");
 const router = express.Router();
 const { body } = require("express-validator");
+const multer = require("multer");
+const { imageFileFilter } = require("../helpers/fileFilter");
+
+const storage = multer.memoryStorage();
+const maxSize = 1 * 1024 * 1024;
+
+const upload = multer({
+  storage,
+  limits: {
+    files: 1,
+    fileSize: maxSize,
+  },
+  fileFilter: (req, file, cb) => {
+    imageFileFilter(file, cb);
+  },
+});
 
 //! ROUTE 1 : CREATE COURSE CATEGORY
 router.post(
@@ -51,6 +67,7 @@ router.post(
   "/create-course",
   requireSignIn,
   isAdmin,
+  upload.single("courseImage"),
   [
     body("courseName", "Course Name is Required").exists(),
     body("courseCategory", "Course Category Id is Required").exists(),
@@ -106,6 +123,11 @@ router.post(
 );
 
 //! ROUTE 11 : GET COURSE ENQUIRIES
-router.get("/get-course-enquiries", requireSignIn, isAdmin, getCourseEnquiriesController)
+router.get(
+  "/get-course-enquiries",
+  requireSignIn,
+  isAdmin,
+  getCourseEnquiriesController
+);
 
 module.exports = router;

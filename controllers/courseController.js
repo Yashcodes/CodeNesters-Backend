@@ -5,6 +5,8 @@ const { validationResult } = require("express-validator");
 const { putObjectURL, getObjectURL } = require("../routes/services/s3");
 const CourseEnquiry = require("../models/CourseEnquiry");
 const NodeCache = require("node-cache");
+const cloudinary = require("cloudinary").v2;
+const { PassThrough } = require("stream");
 
 const cache = new NodeCache();
 
@@ -134,7 +136,6 @@ module.exports.createCourseController = async (req, res) => {
     const {
       courseName,
       courseCategory,
-      courseImage,
       courseCategoryName,
       courseContent,
       coursePrice,
@@ -143,6 +144,13 @@ module.exports.createCourseController = async (req, res) => {
       courseRating,
     } = req.body;
 
+    if (!req.file) {
+      return res.status(400).json({
+        error: "Image is required",
+      });
+    }
+
+    //* Validating if the course with same name already exists or not
     let course = await Course.findOne({ courseName });
 
     if (course) {
@@ -152,24 +160,46 @@ module.exports.createCourseController = async (req, res) => {
       });
     }
 
-    course = await Course.create({
-      courseName,
-      courseCategory,
-      courseImage,
-      courseCategoryName,
-      courseContent,
-      coursePrice,
-      coursePriceDiscount,
-      courseDiscountedPrice,
-      courseRating,
-      slug: slugify(courseName),
-    });
+    const result = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "image",
+        folder: "codenesters/courses/",
+      },
+      async (error, result) => {
+        if (error) {
+          return res.status(500).json({
+            success: false,
+            message: "Failed to upload image",
+            error: error.message,
+          });
+        }
 
-    res.status(201).json({
-      success: true,
-      message: "Course Created Successfully",
-      course,
-    });
+        //* Creating course
+        course = await Course.create({
+          courseName,
+          courseCategory,
+          courseCategoryName,
+          courseContent,
+          coursePrice,
+          coursePriceDiscount,
+          courseDiscountedPrice,
+          courseRating,
+          courseImage: result.secure_url,
+          imagePublicId: result.public_id,
+          slug: slugify(courseName),
+        });
+
+        res.status(201).json({
+          success: true,
+          message: "Course Created Successfully",
+          course,
+        });
+      }
+    );
+
+    const bufferStream = new PassThrough();
+    bufferStream.end(req.file.buffer);
+    bufferStream.pipe(result);
   } catch (error) {
     res.status(500).json({
       success: false,

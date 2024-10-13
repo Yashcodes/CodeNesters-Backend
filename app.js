@@ -9,12 +9,20 @@ const userProfile = require("./routes/userProfile");
 const course = require("./routes/course");
 const service = require("./routes/service");
 const event = require("./routes/event");
+const cloudinary = require("cloudinary").v2;
 
 //! Port for running NodeJS
 const port = 5000;
 
 //! Configure env
 dotenv.config();
+
+//! Cloudinary Configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 //! Creating an express app instance
 const app = express();
@@ -27,6 +35,7 @@ app.use(cors());
 
 //! Middlewares
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 //! Routes

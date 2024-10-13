@@ -10,7 +10,12 @@ const courseSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  
+
+  imagePublicId: {
+    type: String,
+    required: true,
+  },
+
   courseCategory: {
     type: mongoose.ObjectId,
     ref: "CourseCategory",
