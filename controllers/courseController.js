@@ -1,9 +1,9 @@
-const CourseCategory = require("../models/CourseCategory");
-const Course = require("../models/Course");
+const CourseCategory = require("../models/courses/CourseCategory");
+const Course = require("../models/courses/Course");
 const slugify = require("slugify");
 const { validationResult } = require("express-validator");
 const { putObjectURL, getObjectURL } = require("../routes/services/s3");
-const CourseEnquiry = require("../models/CourseEnquiry");
+const CourseEnquiry = require("../models/courses/CourseEnquiry");
 const NodeCache = require("node-cache");
 const cloudinary = require("cloudinary").v2;
 const { PassThrough } = require("stream");
