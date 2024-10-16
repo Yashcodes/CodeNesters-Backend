@@ -53,7 +53,7 @@ module.exports.addToCartController = async (req, res) => {
 
       return res.status(200).json({
         success: true,
-        message: "Updated to cart successfully",
+        message: "Your cart has been updated",
       });
     }
   } catch (error) {
@@ -98,6 +98,4 @@ module.exports.getUserCartController = async (req, res) => {
   }
 };
 
-module.exports.deleteCartController = async (req, res) => {
-  
-}
+module.exports.deleteCartController = async (req, res) => {};
