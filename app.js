@@ -52,6 +52,9 @@ app.get("/", (req, res) => {
   res.send("Hello Express...!");
 });
 
+//! Stripe payments
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${port}`);
 });

@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const Cart = require("../models/Cart");
 const NodeCache = require("node-cache");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const cache = new NodeCache();
 
@@ -99,3 +100,42 @@ module.exports.getUserCartController = async (req, res) => {
 };
 
 module.exports.deleteCartController = async (req, res) => {};
+
+// module.exports.createPaymentIntentController = async (req, res) => {
+//   try {
+//     const { amount } = req.body;
+
+//     const intent = await stripe.paymentIntents.create({
+//       amount: amount,
+//       currency: "inr",
+//       automatic_payment_methods: {
+//         enabled: true,
+//       },
+//     });
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Payment Intent Created Successfully",
+//       clientSecret: intent.client_secret,
+//       dpmCheckerLink: `https://dashboard.stripe.com/settings/payment_methods/review?transaction_id=${intent.id}`,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal Server Error",
+//       error: error.message,
+//     });
+//   }
+// };
+
+module.exports.createPaymentController = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};

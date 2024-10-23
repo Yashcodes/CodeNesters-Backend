@@ -5,6 +5,8 @@ const { requireSignIn } = require("../middlewares/authMiddleware");
 const {
   addToCartController,
   getUserCartController,
+  createPaymentIntentController,
+  createPaymentController,
 } = require("../controllers/cartController");
 const { body } = require("express-validator");
 
@@ -21,5 +23,13 @@ router.post(
 
 //? ROUTE 2: GETTING CART DATA
 router.get("/get-user-cart", requireSignIn, getUserCartController);
+
+// router.post(
+//   "/create-payment-intent",
+//   requireSignIn,
+//   createPaymentIntentController
+// );
+
+router.post("/create-payment", requireSignIn, createPaymentController);
 
 module.exports = router;
