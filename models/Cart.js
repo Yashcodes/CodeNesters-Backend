@@ -8,19 +8,16 @@ const CartSchema = new mongoose.Schema(
       required: true,
     },
 
-    courses: [
-      {
-        courseId: {
-          type: mongoose.Types.ObjectId,
-          ref: "Course",
-          required: true,
-        },
-        quantity: {
-          type: Number,
-          default: 1,
-        },
-      },
-    ],
+    course: {
+      type: mongoose.Types.ObjectId,
+      ref: "Course",
+      required: true,
+    },
+
+    quantity: {
+      type: Number,
+      default: 1,
+    },
   },
   { timestamps: true }
 );

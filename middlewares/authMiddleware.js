@@ -20,6 +20,7 @@ module.exports.requireSignIn = async (req, res, next) => {
     res.status(400).json({
       success: false,
       message: "Authentication error",
+      error: error.message,
     });
   }
 };

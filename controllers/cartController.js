@@ -20,41 +20,31 @@ module.exports.addToCartController = async (req, res) => {
     const userId = req.user.id;
     const { courseId, quantity } = req.body;
 
-    const cart = await Cart.updateOne(
-      { userId, "courses.courseId": courseId },
-      {
-        $set: {
-          "courses.$.quantity": quantity,
-        },
-      }
-    );
+    let cart = await Cart.findOne({ userId, course: courseId });
 
-    if (cart.modifiedCount === 0) {
-      await Cart.updateOne(
-        { userId },
-        {
-          $push: {
-            courses: {
-              courseId,
-              quantity: quantity,
-            },
-          },
-        },
-        { upsert: true }
+    if (cart) {
+      cart = await Cart.findOneAndUpdate(
+        { userId, course: courseId },
+        { $set: { quantity: cart.quantity + 1 } },
+        { new: true }
       );
 
       cache.del(userId);
 
-      return res.status(201).json({
+      return res.status(200).json({
         success: true,
-        message: "Added to cart successfully",
+        message: "Updated cart successfully",
+        cart,
       });
     } else {
+      cart = await Cart.create({ userId, course: courseId, quantity });
+
       cache.del(userId);
 
       return res.status(200).json({
         success: true,
-        message: "Your cart has been updated",
+        message: "Added to cart successfully",
+        cart,
       });
     }
   } catch (error) {
@@ -76,7 +66,7 @@ module.exports.getUserCartController = async (req, res) => {
       cartCourses = await JSON.parse(cache.get(userId));
     } else {
       cartCourses = await Cart.find({ userId }).select("-userId").populate({
-        path: "courses.courseId",
+        path: "course",
         model: "Course",
         select:
           "-slug -courseCategory -courseCategoryName -imagePublicId -courseRating",
@@ -99,38 +89,72 @@ module.exports.getUserCartController = async (req, res) => {
   }
 };
 
-module.exports.deleteCartController = async (req, res) => {};
-
-// module.exports.createPaymentIntentController = async (req, res) => {
-//   try {
-//     const { amount } = req.body;
-
-//     const intent = await stripe.paymentIntents.create({
-//       amount: amount,
-//       currency: "inr",
-//       automatic_payment_methods: {
-//         enabled: true,
-//       },
-//     });
-
-//     res.status(200).json({
-//       success: true,
-//       message: "Payment Intent Created Successfully",
-//       clientSecret: intent.client_secret,
-//       dpmCheckerLink: `https://dashboard.stripe.com/settings/payment_methods/review?transaction_id=${intent.id}`,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Internal Server Error",
-//       error: error.message,
-//     });
-//   }
-// };
-
-module.exports.createPaymentController = async (req, res) => {
+module.exports.deleteCartController = async (req, res) => {
   try {
-    
+    const id = req.params.id;
+
+    let cart = await Cart.findById(id);
+
+    if (!cart) {
+      return res.status(404).json({
+        success: false,
+        message: "Cart not found",
+      });
+    }
+
+    await Cart.findByIdAndDelete(id);
+
+    res.status(200).json({
+      success: true,
+      message: "Cart Item Deleted Successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+module.exports.updateCartController = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: "Cart Validation Error",
+        errors: errors.array(),
+      });
+    }
+
+    const id = req.params.id;
+    const { quantity } = req.body;
+    const userId = req.user.id;
+
+    let cart = await Cart.findById(id);
+
+    if (!cart) {
+      return res.status(404).json({
+        success: false,
+        message: "Cart not found",
+      });
+    }
+
+    cart = await Cart.findByIdAndUpdate(
+      id,
+      { $set: { quantity } },
+      { new: true }
+    );
+
+    cache.del(userId);
+
+    res.status(200).json({
+      success: true,
+      message: "Cart Item Updated Successfully",
+      cart,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
