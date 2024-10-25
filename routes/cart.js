@@ -5,6 +5,8 @@ const { requireSignIn } = require("../middlewares/authMiddleware");
 const {
   addToCartController,
   getUserCartController,
+  deleteCartController,
+  updateCartController,
 } = require("../controllers/cartController");
 const { body } = require("express-validator");
 
@@ -21,5 +23,16 @@ router.post(
 
 //? ROUTE 2: GETTING CART DATA
 router.get("/get-user-cart", requireSignIn, getUserCartController);
+
+//? ROUTE 3: DELETE A CART ITEM
+router.delete("/delete-cart-item/:id", requireSignIn, deleteCartController);
+
+//? ROUTE 4: UPDATE A CART ITEM
+router.put(
+  "/update-cart-item/:id",
+  [body("quantity", "Quantity should exist").exists().isNumeric()],
+  requireSignIn,
+  updateCartController
+);
 
 module.exports = router;
