@@ -11,6 +11,7 @@ const service = require("./routes/service");
 const event = require("./routes/event");
 const cart = require("./routes/cart");
 const payment = require("./routes/payment");
+const order = require("./routes/order");
 const cloudinary = require("cloudinary").v2;
 
 //! Port for running NodeJS
@@ -49,6 +50,7 @@ app.use("/api/v1/event", event);
 app.use("/api/v1/user", userProfile);
 app.use("/api/v1/cart", cart);
 app.use("/api/v1/payment", payment);
+app.use("/api/v1/order", order);
 
 app.get("/", (req, res) => {
   res.send("Hello Express...!");

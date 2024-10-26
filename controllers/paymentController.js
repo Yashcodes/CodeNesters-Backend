@@ -1,7 +1,8 @@
 const { razorPay } = require("../config/paymentConfig");
 const crypto = require("crypto");
 const Cart = require("../models/Cart");
-const NodeCache = require("node-cache");
+const { cache } = require("../config/cacheConfig");
+const Order = require("../models/Order");
 
 module.exports.createPaymentController = async (req, res) => {
   const { amount, courses } = req.body;
@@ -50,20 +51,28 @@ module.exports.verifyPaymentController = async (req, res) => {
       .update(body.toString())
       .digest("hex");
 
-    console.log("Received " + razorpay_signature);
-    console.log("Generated " + generatedSignature);
-
     const isAuthenticated = generatedSignature === razorpay_signature;
 
     if (isAuthenticated) {
-      const cache = new NodeCache();
-      await Cart.findOneAndDelete({ userId });
+      await Cart.deleteMany({ userId });
 
       cache.del(userId);
 
       const order = await razorPay.orders.fetch(razorpay_order_id);
 
-      console.log("Orders " + order);
+      let coursesArray = Object.values(order?.notes).map((courseId) => ({
+        courseId,
+      }));
+
+      const storedOrder = await Order.create({
+        userId,
+        courses: coursesArray,
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature,
+      });
+
+      console.log("Order Created: " + storedOrder);
 
       res.redirect(
         `http://localhost:3000/dashboard/user/payment?referenceId=${razorpay_payment_id}`

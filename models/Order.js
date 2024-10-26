@@ -8,27 +8,29 @@ const OrderSchema = new mongoose.Schema({
   },
   courses: [
     {
+      _id: false,
       courseId: {
         type: mongoose.Types.ObjectId,
         ref: "Course",
         required: true,
       },
-      quantity: {
-        type: Number,
-        default: 1,
-      },
     },
   ],
-  razorPay_payment_id: {
+  razorpay_payment_id: {
     type: String,
     required: true,
   },
-  razorPay_order_id: {
+  razorpay_order_id: {
     type: String,
     required: true,
   },
-  razorPay_order_id: {
+  razorpay_signature: {
     type: String,
     required: true,
   },
 });
+
+OrderSchema.index({ userId: 1 });
+
+const Order = mongoose.model("Order", OrderSchema);
+module.exports = Order;

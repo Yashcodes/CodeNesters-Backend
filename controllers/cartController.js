@@ -1,8 +1,6 @@
 const { validationResult } = require("express-validator");
 const Cart = require("../models/Cart");
-const NodeCache = require("node-cache");
-
-const cache = new NodeCache();
+const { cache } = require("../config/cacheConfig");
 
 module.exports.addToCartController = async (req, res) => {
   try {
@@ -22,18 +20,17 @@ module.exports.addToCartController = async (req, res) => {
     let cart = await Cart.findOne({ userId, course: courseId });
 
     if (cart) {
-      cart = await Cart.findOneAndUpdate(
-        { userId, course: courseId },
-        { $set: { quantity: cart.quantity + 1 } },
-        { new: true }
-      );
+      // cart = await Cart.findOneAndUpdate(
+      //   { userId, course: courseId },
+      //   { $set: { quantity: cart.quantity + 1 } },
+      //   { new: true }
+      // );
 
-      cache.del(userId);
+      // cache.del(userId);
 
       return res.status(200).json({
         success: true,
-        message: "Updated cart successfully",
-        cart,
+        message: "Already added to cart",
       });
     } else {
       cart = await Cart.create({ userId, course: courseId, quantity });
@@ -91,6 +88,7 @@ module.exports.getUserCartController = async (req, res) => {
 module.exports.deleteCartController = async (req, res) => {
   try {
     const id = req.params.id;
+    const userId = req.user.id;
 
     let cart = await Cart.findById(id);
 
@@ -102,6 +100,7 @@ module.exports.deleteCartController = async (req, res) => {
     }
 
     await Cart.findByIdAndDelete(id);
+    cache.del(userId);
 
     res.status(200).json({
       success: true,
