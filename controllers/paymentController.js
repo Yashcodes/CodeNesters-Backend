@@ -27,8 +27,6 @@ module.exports.createPaymentController = async (req, res) => {
       success: true,
       order,
     });
-
-    console.log(order);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -72,10 +70,8 @@ module.exports.verifyPaymentController = async (req, res) => {
         razorpay_signature,
       });
 
-      console.log("Order Created: " + storedOrder);
-
       res.redirect(
-        `http://localhost:3000/dashboard/user/payment?referenceId=${razorpay_payment_id}`
+        `https://codenesters.in/dashboard/user/payment?referenceId=${razorpay_payment_id}`
       );
     } else {
       res.status(402).json({
