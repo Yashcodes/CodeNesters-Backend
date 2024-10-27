@@ -58,9 +58,9 @@ module.exports.getUserCartController = async (req, res) => {
 
     let cartCourses;
 
-    // if (cache.has(`cart${userId}`)) {
-    //   cartCourses = await JSON.parse(cache.get(`cart${userId}`));
-    // } else {
+    if (cache.has(`cart${userId}`)) {
+      cartCourses = await JSON.parse(cache.get(`cart${userId}`));
+    } else {
       cartCourses = await Cart.find({ userId }).select("-userId").populate({
         path: "course",
         model: "Course",
@@ -68,8 +68,8 @@ module.exports.getUserCartController = async (req, res) => {
           "-slug -courseCategory -courseCategoryName -imagePublicId -courseRating",
       });
 
-    //   cache.set(`cart${userId}`, JSON.stringify(cartCourses));
-    // }
+      cache.set(`cart${userId}`, JSON.stringify(cartCourses));
+    }
 
     res.status(200).json({
       success: true,
