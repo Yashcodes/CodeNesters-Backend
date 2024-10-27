@@ -35,7 +35,7 @@ module.exports.addToCartController = async (req, res) => {
     } else {
       cart = await Cart.create({ userId, course: courseId, quantity });
 
-      cache.del(userId);
+      cache.del(`cart${userId}`);
 
       return res.status(200).json({
         success: true,
@@ -58,8 +58,8 @@ module.exports.getUserCartController = async (req, res) => {
 
     let cartCourses;
 
-    if (cache.has(userId)) {
-      cartCourses = await JSON.parse(cache.get(userId));
+    if (cache.has(`cart${userId}`)) {
+      cartCourses = await JSON.parse(cache.get(`cart${userId}`));
     } else {
       cartCourses = await Cart.find({ userId }).select("-userId").populate({
         path: "course",
@@ -68,7 +68,7 @@ module.exports.getUserCartController = async (req, res) => {
           "-slug -courseCategory -courseCategoryName -imagePublicId -courseRating",
       });
 
-      cache.set(userId, JSON.stringify(cartCourses));
+      cache.set(`cart${userId}`, JSON.stringify(cartCourses));
     }
 
     res.status(200).json({
@@ -100,7 +100,7 @@ module.exports.deleteCartController = async (req, res) => {
     }
 
     await Cart.findByIdAndDelete(id);
-    cache.del(userId);
+    cache.del(`cart${userId}`);
 
     res.status(200).json({
       success: true,
@@ -146,7 +146,7 @@ module.exports.updateCartController = async (req, res) => {
       { new: true }
     );
 
-    cache.del(userId);
+    cache.del(`cart${userId}`);
 
     res.status(200).json({
       success: true,
