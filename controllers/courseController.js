@@ -7,8 +7,7 @@ const CourseEnquiry = require("../models/courses/CourseEnquiry");
 const NodeCache = require("node-cache");
 const cloudinary = require("cloudinary").v2;
 const { PassThrough } = require("stream");
-
-const cache = new NodeCache();
+const { cache } = require("../config/cacheConfig");
 
 //? CONTROLLERS FOR CREATING COURSE CATEGORY
 module.exports.createCourseCategoryController = async (req, res) => {
@@ -189,6 +188,8 @@ module.exports.createCourseController = async (req, res) => {
           slug: slugify(courseName),
         });
 
+        cache.del("courses");
+
         res.status(201).json({
           success: true,
           message: "Course Created Successfully",
@@ -219,6 +220,48 @@ module.exports.deleteCourseController = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Course Deleted Successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+module.exports.updateCourseController = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    let course = await Course.findById(id);
+
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course Not Found",
+      });
+    }
+
+    const { coursePrice, coursePriceDiscount, courseDiscountedPrice, courseRating } =
+      req.body;
+
+    course = await Course.findByIdAndUpdate(
+      id,
+      {
+        coursePrice,
+        coursePriceDiscount,
+        courseDiscountedPrice,
+        courseRating,
+      },
+      { new: true }
+    );
+
+    cache.del("courses");
+
+    res.status(200).json({
+      success: true,
+      message: "Course Updated Successfully",
     });
   } catch (error) {
     res.status(500).json({
@@ -276,6 +319,7 @@ module.exports.getCourseController = async (req, res) => {
   }
 };
 
+//! Not Using
 //? CONTROLLER FOR UPLOADING COURSE IMAGE TO S3
 module.exports.uploadCourseImageController = async (req, res) => {
   try {
@@ -298,6 +342,7 @@ module.exports.uploadCourseImageController = async (req, res) => {
   }
 };
 
+//! Not Using
 //? CONTROLLER FOR GETTING COURSE IMAGE FROM S3
 module.exports.getCourseImageController = async (req, res) => {
   try {

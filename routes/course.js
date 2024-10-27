@@ -13,6 +13,7 @@ const {
   getCourseImageController,
   courseFormSubmitController,
   getCourseEnquiriesController,
+  updateCourseController,
 } = require("../controllers/courseController");
 const router = express.Router();
 const { body } = require("express-validator");
@@ -41,6 +42,7 @@ router.post(
   createCourseCategoryController
 );
 
+//! ROUTE 2: UPDATE COURSE CATEGORY
 router.put(
   "/update-course-category",
   requireSignIn,
@@ -48,6 +50,7 @@ router.put(
   updateCourseCategoryController
 );
 
+//! ROUTE 3: DELETE COURSE CATEGORY
 router.delete(
   "/delete-course-category",
   requireSignIn,
@@ -55,6 +58,7 @@ router.delete(
   deleteCourseCategoryController
 );
 
+//! ROUTE4: GETTING ALL COURSE CATEGORIES
 router.get(
   "/get-all-course-categories",
   requireSignIn,
@@ -62,7 +66,7 @@ router.get(
   getAllCourseCategoryController
 );
 
-//! ROUTE 4 : CREATE COURSE
+//! ROUTE 5 : CREATE COURSE
 router.post(
   "/create-course",
   requireSignIn,
@@ -84,16 +88,19 @@ router.post(
   createCourseController
 );
 
-//! ROUTE 5 : DELETE COURSE
+//! ROUTE 6 : DELETE COURSE
 router.delete("/delete-course", requireSignIn, isAdmin, deleteCourseController);
 
-//! ROUTE 6 : GET ALL COURSES
+//! ROUTE 7: UPDATE COURSE
+router.put("/update-course/:id", requireSignIn, isAdmin, updateCourseController)
+
+//! ROUTE 8 : GET ALL COURSES
 router.get("/get-all-courses", getAllCoursesController);
 
-//! ROUTE 7 : GET SINGLE COURSES
+//! ROUTE 9 : GET SINGLE COURSES
 router.get("/get-course/:id", getCourseController);
 
-//! ROUTE 8 : UPLOAD COURSE IMAGE
+//! ROUTE 10 : UPLOAD COURSE IMAGE
 router.post(
   "/upload-course-image",
   requireSignIn,
@@ -101,10 +108,10 @@ router.post(
   uploadCourseImageController
 );
 
-//! ROUTE 9 : GETTING COURSE IMAGE URL
+//! ROUTE 11 : GETTING COURSE IMAGE URL
 router.post("/get-course-image", getCourseImageController);
 
-//! ROUTE 10 : SUBMITTING THE COURSE ENQUIRY
+//! ROUTE 12 : SUBMITTING THE COURSE ENQUIRY
 router.post(
   "/course-form-submit",
   //? Express validation started
@@ -122,7 +129,7 @@ router.post(
   courseFormSubmitController
 );
 
-//! ROUTE 11 : GET COURSE ENQUIRIES
+//! ROUTE 13 : GET COURSE ENQUIRIES
 router.get(
   "/get-course-enquiries",
   requireSignIn,
