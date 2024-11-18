@@ -54,7 +54,7 @@ module.exports.verifyPaymentController = async (req, res) => {
     if (isAuthenticated) {
       await Cart.deleteMany({ userId });
 
-      cache.del(userId);
+      cache.del(`cart${userId}`);
 
       const order = await razorPay.orders.fetch(razorpay_order_id);
 
