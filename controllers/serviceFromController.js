@@ -32,7 +32,7 @@ module.exports.serviceFormController = async (req, res) => {
       message: "Service Requested Successfully",
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({
       success: false,
       message: "Internal Server Error",

@@ -394,7 +394,7 @@ module.exports.courseFormSubmitController = async (req, res) => {
       message: "Courses Enquiry Submitted Successfully",
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
