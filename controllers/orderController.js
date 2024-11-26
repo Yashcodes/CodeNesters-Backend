@@ -15,7 +15,7 @@ module.exports.getAllOrdersController = async (req, res) => {
       });
 
     res.status(200).json({
-      success: false,
+      success: true,
       message: "Order Fetched Successfully",
       orders,
     });
