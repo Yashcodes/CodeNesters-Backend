@@ -57,6 +57,7 @@ module.exports.verifyPaymentController = async (req, res) => {
       cache.del(`cart${userId}`);
 
       const order = await razorPay.orders.fetch(razorpay_order_id);
+      console.log(order);
 
       let coursesArray = Object.values(order?.notes).map((courseId) => ({
         courseId,
@@ -68,6 +69,11 @@ module.exports.verifyPaymentController = async (req, res) => {
         razorpay_order_id,
         razorpay_payment_id,
         razorpay_signature,
+        status: order.status,
+        amount: order.amount,
+        amount_paid: order.amount_paid,
+        amount_due: order.amount_due,
+        currency: order.currency,
       });
 
       res.redirect(

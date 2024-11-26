@@ -7,6 +7,7 @@ const OrderSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+
     courses: [
       {
         _id: false,
@@ -17,17 +18,32 @@ const OrderSchema = new mongoose.Schema(
         },
       },
     ],
+
     razorpay_payment_id: {
       type: String,
       required: true,
     },
+
     razorpay_order_id: {
       type: String,
       required: true,
     },
+
     razorpay_signature: {
       type: String,
       required: true,
+    },
+
+    status: {
+      type: String,
+    },
+
+    amount: {
+      type: String,
+    },
+    
+    currency: {
+      type: String,
     },
   },
   { timestamps: true }
