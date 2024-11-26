@@ -41,7 +41,15 @@ const OrderSchema = new mongoose.Schema(
     amount: {
       type: String,
     },
+
+    amount_paid: {
+      type: String,
+    },
     
+    amount_due: {
+      type: String,
+    },
+
     currency: {
       type: String,
     },
