@@ -4,15 +4,7 @@ module.exports.getAllOrdersController = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const orders = await Order.find({ userId })
-      .select("-razorpay_signature")
-      .select("-userId")
-      .populate({
-        path: "courses.courseId",
-        model: "Course",
-        select:
-          "-slug -courseCategory -courseCategoryName -imagePublicId -courseRating",
-      });
+    const orders = await Order.find({ userId }).select("_id amount createdAt");
 
     res.status(200).json({
       success: true,
