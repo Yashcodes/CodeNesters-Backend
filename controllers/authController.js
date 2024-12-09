@@ -235,7 +235,7 @@ module.exports.sendResetLinkController = async (req, res) => {
 
     if (setUserToken) {
       const mailOptions = {
-        from: "codenesters3@gmail.com",
+        from: '"CodeNesters" <codenesters3@gmail.com>',
         to: email,
         subject: "Reset your CodeNesters account password",
         text: `This link will reset your CodeNesters account and is valid only for 2 minutes. https://codenesters.in/reset-password/${user.id}/${setUserToken.verifyToken}`,
